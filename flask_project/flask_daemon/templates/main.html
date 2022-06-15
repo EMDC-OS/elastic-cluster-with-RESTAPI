@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1>Elastic Horovod GPU Autoscaling UI</h1>
+        <form action = "http://115.145.178.218:8080/" method = "POST">
+            <p>GPU Information (+) [host_address:num_slots]: <input type = "text" value="" name = "+" /></p>
+            <p><input type = "submit" value = "Autoscaling(+)" /></p>
+            <br>
+        </form>
+        <form action = "http://115.145.178.218:8080/" method = "POST">
+            <p>GPU Information (-) [host_address:num_slots]: <input type = "text" value="" name = "-" /></p>
+            <p><input type = "submit" value = "Autoscaling(-)" /></p>
+            <br>
+        </form>
+        <br>
+        <h2>Current Running Gpu</h2>
+        <pre id='gpu_list' style='font-size: 25px'></pre>
+        <h2>GPU Change Log</h2>
+        <pre id='gpu_change_log' style='font-size: 20px'></pre>
+        <br>
+        <form action= "http://115.145.178.218:8080/log" method = "POST">
+            <p><input type = "submit" value = "Show Worker Log" /></p>
+        </form>
+        <script>
+            setInterval(function(){$.ajax({
+                url: '/update',
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                    $('#gpu_list').html(response['current_gpu_list']);
+                    $('#gpu_change_log').html(response['gpu_log']);
+                },
+                error: function(error) {
+                    console.log(error)
+                }
+            })}, 500);
+        </script>
+    </body>
+</html>
+
