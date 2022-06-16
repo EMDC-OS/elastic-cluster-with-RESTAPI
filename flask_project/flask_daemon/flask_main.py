@@ -1,4 +1,3 @@
-from threading import Thread
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
@@ -95,7 +94,6 @@ def logging_func():
         'worker_log_string': worker_log_string,
     })
 
-
 @app.route("/update", methods=['POST'])
 def update():
     gpu_string = ""
@@ -165,6 +163,3 @@ def update():
         'current_gpu_list': gpu_string,
         'gpu_log': log_list_string,
     })
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port = 8080, debug = True)
