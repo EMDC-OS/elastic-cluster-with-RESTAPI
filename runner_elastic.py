@@ -46,7 +46,8 @@ class _ProfileKerasFitCallback(keras.callbacks.Callback):
   def on_batch_end(self, batch, logs=None):
     """Records elapse time of the batch and calculates examples per second."""
 
-    f_write = open("/workspace/nvidia-examples/cnn/nvutils/log.txt", "a")
+    open_string = "/workspace/nvidia-examples/cnn/nvutils/log" + str(hvd.rank()) + ".txt"
+    f_write = open(open_string, "a")
 
     if self.global_steps % self.log_steps == 0:
       timestamp = time.time()
