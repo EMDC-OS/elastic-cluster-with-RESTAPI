@@ -21,39 +21,14 @@ import os
 import sys
 import time
 import horovod.tensorflow.keras as hvd
-
-def start_daemon():
-        try:
-          pid = os.fork()
-
-          if pid > 0:
-            print('PID: %d' % pid)
-            return 0
-
-        except OSError as error:
-          print('Unable to fork. Error: %d (%s)' % (error.errno, error.strerror))
-          exit(0)
-
-        doTask()
-
-def doTask():
-        os.setsid()
-
-        os.open("/dev/null", os.O_RDWR)
-        os.dup(0)
-        os.dup(0)
-
-        file_string = "/workspace/nvidia-examples/cnn/nvutils/run/log" + "0" + ".txt"
-
-        while True:
-            f_read = open(file_string, "a")
-            f_read.write(str(hvd.rank()))
-            f_read.close()
-            time.sleep(1)
+import daemonpkg.daemonize as dmn
 
 nvutils.init()
 
-start_daemon()
+log_str = "/workspace/nvidia-examples/cnn/nvutils/run/log" + str(hvd.rank()) + ".txt"
+log_rank = hvd.rank()
+
+dmn.start_daemon(log_str, log_rank)
 
 default_args = {
     'image_width' : 224,
