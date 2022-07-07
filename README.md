@@ -13,7 +13,7 @@ ElasticHorovod-RESTAPI-tool은 이를 동적으로 파악해서 보여주는 int
 1. uwsgi
 
 ```sh
-uwsgi --ini uwsgi.ini
+uwsgi --ini <path-to-uwsgi.ini>
 ```
 
 2. nginx
