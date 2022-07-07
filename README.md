@@ -9,3 +9,7 @@ ElasticHorovod-RESTAPI-tool은 이를 동적으로 파악해서 보여주는 int
 ### Prerequisites
 
 ### How to Build
+
+```sh
+horovodrun -p <SSH port number> --network-interface <nic> -np <num_proc> --min-np <min_num> --max-np <max_num> --host-discovery-script <path-to-script> python <path-to-run-script>
+```
