@@ -25,12 +25,23 @@ import time
 import re
 import numpy as np
 
+import sys
+import logging
+import signal
+import socket
+
+import argparse
+
 if common.is_minimal_setup():
   from . import dummy_hvd as hvd
 else:
   import horovod.tensorflow.keras as hvd
 
 from tensorflow.keras import backend
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+local_ip = s.getsockname()[0]
 
 class _ProfileKerasFitCallback(keras.callbacks.Callback):
   def __init__(self, batch_size, display_every=10):
@@ -46,23 +57,23 @@ class _ProfileKerasFitCallback(keras.callbacks.Callback):
   def on_batch_end(self, batch, logs=None):
     """Records elapse time of the batch and calculates examples per second."""
 
-    open_string = "/workspace/nvidia-examples/cnn/nvutils/log" + str(hvd.rank()) + ".txt"
+    open_string = "/workspace/nvidia-examples/cnn/nvutils/run/" + str(local_ip) + "_log" + str(hvd.local_rank()) + ".txt"
     f_write = open(open_string, "a")
 
     if self.global_steps % self.log_steps == 0:
       timestamp = time.time()
       elapsed_time = timestamp - self.start_time
       examples_per_second = (self.batch_size * self.log_steps) / elapsed_time
-      if hvd.rank() == 0:
+      if hvd.local_rank() == 0:
         temp3 = "global_step: " + str(self.global_steps) + " images_per_sec: " + str(examples_per_second) + "\n"
         f_write.write(temp3)
 
         print("global_step: %d images_per_sec: %.1f" % (self.global_steps,
                                                         examples_per_second))
 
-      temp1 = "[" + str(self.global_steps) + "] " + "worker: "  + str(hvd.rank()) + " -> elapsed time: " + str(elapsed_time) + "\n"
+      temp1 = "[" + str(self.global_steps) + "] " + "node/worker: "  + str(local_ip) + "/" + str(hvd.local_rank()) + " -> elapsed time: " + str(elapsed_time) + "\n"
       f_write.write(temp1)
-      temp2 = "[" + str(self.global_steps) + "] " + "worker: "  + str(hvd.rank()) + " -> current time: " + str(timestamp) + "\n"
+      temp2 = "[" + str(self.global_steps) + "] " + "node/worker: "  + str(local_ip) + "/" + str(hvd.local_rank()) + " -> current time: " + str(timestamp) + "\n"
       f_write.write(temp2)
 
       print("elapsed time: {}".format(elapsed_time))
@@ -246,6 +257,7 @@ def train(model_func, params):
   training_hooks.extend([hvd.elastic.CommitStateCallback(state),
                          hvd.elastic.UpdateBatchStateCallback(state),
                          hvd.elastic.UpdateEpochStateCallback(state)])
+
   # XXX
 
   try:
@@ -255,6 +267,7 @@ def train(model_func, params):
       state.model.fit(train_input, epochs=num_epochs, callbacks=training_hooks,
                 steps_per_epoch=nstep_per_epoch, verbose=verbose,
                 initial_epoch=initial_epoch, **valid_params)
+
     train(state)
   except KeyboardInterrupt:
     print("Keyboard interrupt")
@@ -262,7 +275,6 @@ def train(model_func, params):
   if export_dir and hvd.rank() == 0:
     model.save(export_dir)
     print("The model is saved to {}".format(export_dir))
-
 
 def predict(params):
   image_width = params['image_width']
@@ -282,4 +294,3 @@ def predict(params):
                                                   image_width, with_label=False)
   results = model.predict(predict_input, verbose=1, steps=3)
   print("The loaded model predicts {} images.".format(results.shape[0]))
-
