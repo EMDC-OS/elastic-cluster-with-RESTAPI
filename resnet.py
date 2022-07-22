@@ -22,11 +22,16 @@ import sys
 import time
 import horovod.tensorflow.keras as hvd
 import daemonpkg.daemonize as dmn
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+local_ip = s.getsockname()[0]
 
 nvutils.init()
 
-log_str = "/workspace/nvidia-examples/cnn/nvutils/run/log" + str(hvd.rank()) + ".txt"
-log_rank = hvd.rank()
+log_str = "/workspace/nvidia-examples/cnn/nvutils/run/" + str(local_ip) + "_log" + str(hvd.local_rank()) + ".txt"
+log_rank = hvd.local_rank()
 
 dmn.start_daemon(log_str, log_rank)
 
