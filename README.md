@@ -22,11 +22,7 @@ REST-API를 이용하기 위해 몇 가지 파이썬 라이브러리가 필요�
 
 ## How to Run
 
-해당 tool의 실행 순서는 다음과 같습니다.
-
-```sh
-Web Server 실행 -> horovodrun -> 학습 결과 log 확인
-```
+Elastic Horovod가 학습하는 동안 Web Server와 지속적으로 상호작용을 해야 합니다. 따라서, 해당 tool을 사용하기 위해서는 Web Server가 우선 실행되어 Web page를 띄워주고 
 
 우선, Web Server를 실행하는 방법에 대해 설명하겠습니다.
 
