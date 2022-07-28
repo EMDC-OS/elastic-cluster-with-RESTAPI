@@ -6,7 +6,7 @@ ElasticHorovod-RESTAPI-tool은 이를 동적으로 파악해서 보여주는 int
 
 학습의 효율성을 높이기 위해 worker를 scaling in/out 하는 시기를 결정하는 알고리즘을 연구하는데 해당 tool을 사용할 수 있습니다. 이를 통해 분산 학습 클라우드를 효과적으로 관리할 수 있는 platform을 만들 수 있을 것으로 기대하고 있습니다.
 
-### Setting
+## Setting
 
 해당 tool을 이용하려면 Elastic Horovod를 이용할 수 있는 환경과 여러 Python 라이브러리의 설치가 필요합니다.
 
@@ -20,7 +20,7 @@ REST-API를 이용하기 위해 몇 가지 파이썬 라이브러리가 필요�
 + uwsgi
 + nginx
 
-### How to Run
+## How to Run
 
 1. uwsgi
 
