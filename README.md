@@ -22,7 +22,9 @@ REST-API를 이용하기 위해 몇 가지 파이썬 라이브러리가 필요�
 
 ## How to Run
 
-Elastic Horovod가 학습하는 동안 Web Server와 지속적으로 상호작용을 해야 합니다. 따라서, 해당 tool을 사용하기 위해서는 Web Server가 우선 실행되어 Web page를 띄워주고 horovodrun 명령어를 통해 Elastic Horovod가 학습을 
+Elastic Horovod가 학습하는 동안 Web Server와 지속적으로 상호작용을 해야 합니다.
+따라서, 해당 tool을 사용하기 위해서는 Web Server가 우선 실행되어 Web page를 띄워주고 horovodrun 명령어를 통해 Elastic Horovod가 학습을 시작한 뒤 Web page와 상호작용 합니다.
+이와 같은 실행 과정을 순서대로 설명하면 다음과 같
 
 우선, Web Server를 실행하는 방법에 대해 설명하겠습니다.
 
