@@ -17,7 +17,7 @@ tool을 개발하며 Elastic Horovod가 설치된 docker image를 이용하여 d
 2. Python 라이브러리 설치  
 REST-API를 이용하기 위해 몇 가지 파이썬 라이브러리가 필요합니다. 필요한 라이브러리와 설정 방법은 다음과 같습니다.  
 + Flask  
-+ uwsgi
++ uwsgi  
 + nginx  
 
 ## How to Run
@@ -39,3 +39,5 @@ nginx
 ```sh
 horovodrun -p <SSH port number> --network-interface <nic> -np <num_proc> --min-np <min_num> --max-np <max_num> --host-discovery-script <path-to-script> python <path-to-run-script>
 ```
+
+## Result
