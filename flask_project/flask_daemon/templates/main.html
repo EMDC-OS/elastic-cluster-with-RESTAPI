@@ -5,12 +5,12 @@
     <body>
         <h1>Elastic Horovod GPU Autoscaling UI</h1>
         <form action = "http://115.145.178.218:8080/" method = "POST">
-            <p>GPU Information (+) [host_address:num_slots]: <input type = "text" value="" name = "+" /></p>
+            <p>Scale OUT (GPU +) [node_address:worker_num]: <input type = "text" value="" name = "+" /></p>
             <p><input type = "submit" value = "Autoscaling(+)" /></p>
             <br>
         </form>
         <form action = "http://115.145.178.218:8080/" method = "POST">
-            <p>GPU Information (-) [host_address:num_slots]: <input type = "text" value="" name = "-" /></p>
+            <p>Scale IN (GPU -) [node_address:worker_num]: <input type = "text" value="" name = "-" /></p>
             <p><input type = "submit" value = "Autoscaling(-)" /></p>
             <br>
         </form>
@@ -20,9 +20,33 @@
         <h2>GPU Change Log</h2>
         <pre id='gpu_change_log' style='font-size: 20px'></pre>
         <br>
-        <form action= "http://115.145.178.218:8080/log" method = "POST">
-            <p><input type = "submit" value = "Show Worker Log" /></p>
+        <br>
+        <h3>Node -> testbed1(115.145.178.217)</h3>
+        <form action= "http://115.145.178.218:8080/info_tb1" method = "POST">
+            <p><input type = "submit" value = "tb1 Info" /></p>
         </form>
+        <form action= "http://115.145.178.218:8080/log_tb1" method = "POST">
+            <p><input type = "submit" value = "tb1 Train Log" /></p>
+        </form>
+        <form action= "http://115.145.178.218:8080/gpustat_tb1" method = "POST">
+            <p><input type = "submit" value = "tb1 Gpu Info" /></p>
+        </form>
+        <br>
+        <h3>Node -> testbed2(115.145.178.218)</h3>
+        <form action= "http://115.145.178.218:8080/info_tb2" method = "POST">
+            <p><input type = "submit" value = "tb2 Info" /></p>
+        </form>
+        <form action= "http://115.145.178.218:8080/log_tb2" method = "POST">
+            <p><input type = "submit" value = "tb2 Train Log" /></p>
+        </form>
+        <form action= "http://115.145.178.218:8080/gpustat_tb2" method = "POST">
+            <p><input type = "submit" value = "tb2 Gpu Info" /></p>
+        </form>
+        <br>
+        <footer>
+            <p>&copy; JunYoungHoon 2022</p>
+            <a href="https://github.com/EMDC-OS/ElasticHorovod-RESTAPI-tool">Github Link</a>
+        </footer>
         <script>
             setInterval(function(){$.ajax({
                 url: '/update',
@@ -35,7 +59,7 @@
                 error: function(error) {
                     console.log(error)
                 }
-            })}, 500);
+            })}, 1000);
         </script>
     </body>
 </html>
