@@ -28,13 +28,6 @@ def doTask(log_str, gpu_index):
     log_string = "Start"
 
     while True:
-        '''f_log = open(log_file_string, "r")
-        log_temp = f_log.read()
-
-        if log_string != log_temp[:-1]:
-            log_string = log_temp[:-1]
-            log_time = 0'''
-
         if gpu_index == 0:
             os.system(gpustat_file_string)
             with open(gpustat_open_string, "r") as f_gpu:
@@ -43,7 +36,7 @@ def doTask(log_str, gpu_index):
             gpu_json_data['time_now'] = gpustat_time
 
             with open(gpustat_open_string, "w") as f_gpu_:
-                json.dump(gpu_json_data, f_gpu_, indent="\t")                                                                                                                                                                                          
+                json.dump(gpu_json_data, f_gpu_, indent="\t")
 
             files = {'file': open(gpustat_open_string, 'rb')}
             gpustat_time += 1
@@ -53,5 +46,4 @@ def doTask(log_str, gpu_index):
             elif str(local_ip) == "115.145.178.218":
                 r = requests.post('http://115.145.178.218:8080/gpustat-data-tb2', files=files)
 
-        #f_log.close()
         time.sleep(1)
