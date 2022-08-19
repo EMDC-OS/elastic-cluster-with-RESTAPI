@@ -7,9 +7,14 @@ app = Flask(__name__)
 log_list = []
 global_gpu_list = []
 gpustat_list = []
+
+is_gpu = [0, 0]
+log_data_tb1_list = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+log_data_tb2_list = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
+
 time_now = 0
-is_gpu = 0
-gpu_location = ""
+gpu_location_tb1 = ""
+gpu_location_tb2 = ""
 
 @app.route('/', methods = ['POST', 'GET'])
 def update_log():
@@ -21,7 +26,6 @@ def update_log():
     for i in range(len(running_gpu_list)):
         temp = running_gpu_list[i].split()
         running_gpu_list[i] = temp[1]
-
     f_read.close()
 
     if request.method == 'POST':
@@ -42,13 +46,11 @@ def update_log():
 
         for i in range(len(running_gpu_list)):
             temp = running_gpu_list[i].split(":")
-
             if temp[0] == ip_address:
                 if val_list[0] == '+':
                     temp_num = int(temp[1]) + int(host_num)
                     temp_string = temp[0] + ":" + str(temp_num)
                     running_gpu_list[i] = temp_string
-
                 else:
                     temp_num = int(temp[1]) - int(host_num)
                     if temp_num < 0:
@@ -65,7 +67,6 @@ def update_log():
 
         for i in range(len(running_gpu_list)):
             temp = running_gpu_list[i].split(":")
-
             if temp[1] != '0':
                 write_string = write_string + "echo " + running_gpu_list[i] + "\n"
 
@@ -76,41 +77,65 @@ def update_log():
 
 @app.route('/log_tb1', methods = ['GET', 'POST'])
 def logging_tb1():
-    if request.method == 'POST':
-        '''f_log = request.files.get('file', None)
-        if f_log:
-            log_location = '/workspace/nvidia-examples/cnn/nvutils/run/log_control/' + f_log.filename
-            f_log.save(log_location)
-
-            f_read = open(log_location, "r")
-            log = f_read.read()
-            print(log)
-            test.append(log)
-            f_read.close()'''
-        f_log = request.get_json(silent=True)
-        log = json.loads(f_log)
-        print(log)
-
     return render_template("log_index_tb1.html")
 
 @app.route('/log_tb2', methods = ['GET', 'POST'])
 def logging_tb2():
-    if request.method == 'POST':
-        '''f_log = request.files.get('file', None)
-        if f_log:
-            log_location = '/workspace/nvidia-examples/cnn/nvutils/run/log_control/' + f_log.filename
-            f_log.save(log_location)
+    return render_template("log_index_tb2.html")
 
-            f_read = open(log_location, "r")
-            log = f_read.read()
-            print(log)
-            test.append(log)
-            f_read.close()'''
+@app.route('/log-data-tb1', methods = ['GET', 'POST'])
+def log_now_tb1():
+    global log_data_tb1_list
+
+    if request.method == 'POST':
         f_log = request.get_json(silent=True)
         log = json.loads(f_log)
-        print(log)
 
-    return render_template("log_index_tb2.html")
+        temp = []
+        temp.append(log["global_step"])
+        temp.append(log["elapsed_time"])
+        log_data_tb1_list[log["worker"]] = temp
+
+        if log["worker"] == 0:
+            temp_i = []
+            temp_i.append(log["global_step"])
+            temp_i.append(log["images_per_sec"])
+            log_data_tb1_list[-1] = temp_i
+
+        response = make_response(json.dumps(log_data_tb1_list))
+        response.content_type = 'application/json'
+        return response                                                                                                                                                                                                                                
+    else:
+        response = make_response(json.dumps(log_data_tb1_list))
+        response.content_type = 'application/json'
+        return response
+
+@app.route('/log-data-tb2', methods = ['GET', 'POST'])
+def log_now_tb2():
+    global log_data_tb2_list
+
+    if request.method == 'POST':
+        f_log = request.get_json(silent=True)
+        log = json.loads(f_log)
+
+        temp = []
+        temp.append(log["global_step"])
+        temp.append(log["elapsed_time"])
+        log_data_tb2_list[log["worker"]] = temp
+
+        if log["worker"] == 0:
+            temp_i = []
+            temp_i.append(log["global_step"])
+            temp_i.append(log["images_per_sec"])
+            log_data_tb2_list[-1] = temp_i
+
+        response = make_response(json.dumps(log_data_tb2_list))
+        response.content_type = 'application/json'
+        return response
+    else:
+        response = make_response(json.dumps(log_data_tb2_list))
+        response.content_type = 'application/json'
+        return response
 
 @app.route('/gpustat_tb1', methods = ['GET', 'POST'])
 def gpu_stat_tb1():
@@ -123,21 +148,19 @@ def gpu_stat_tb2():
 @app.route('/gpustat-data-tb1', methods = ['GET', 'POST'])
 def gpustat_now_tb1():
     global is_gpu
-    global gpu_location
-
+    global gpu_location_tb1
     data = []
     default_data = [[[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]]]
 
     if request.method == 'POST':
         f_gpustat = request.files.get('file', None)
         if f_gpustat:
-            gpu_location = '/workspace/nvidia-examples/cnn/nvutils/run/gpustat_control/' + f_gpustat.filename
-            f_gpustat.save(gpu_location)
-            is_gpu = 1
+            gpu_location_tb1 = '/workspace/nvidia-examples/cnn/nvutils/run/gpustat_control/' + f_gpustat.filename
+            f_gpustat.save(gpu_location_tb1)
+            is_gpu[0] = 1
 
-    if is_gpu == 1:
-        #file open and parsing
-        f = open(gpu_location, "r")
+    if is_gpu[0] == 1:
+        f = open(gpu_location_tb1, "r")
         gpustat_read = f.read()
         gpustat_string = json.loads(gpustat_read)
 
@@ -161,37 +184,34 @@ def gpustat_now_tb1():
 
             data.append(temp)
 
-        response = make_response(json.dumps(data))
-        response.content_type = 'application/json'
-
         f.close()
 
+        response = make_response(json.dumps(data))
+        response.content_type = 'application/json'
         return response
 
     else:
         response = make_response(json.dumps(default_data))
         response.content_type = 'application/json'
-
         return response
 
 @app.route('/gpustat-data-tb2', methods = ['GET', 'POST'])
 def gpustat_now_tb2():
     global is_gpu
-    global gpu_location
-
+    global gpu_location_tb2
     data = []
     default_data = [[[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]]]
 
     if request.method == 'POST':
         f_gpustat = request.files.get('file', None)
         if f_gpustat:
-            gpu_location = '/workspace/nvidia-examples/cnn/nvutils/run/gpustat_control/' + f_gpustat.filename
-            f_gpustat.save(gpu_location)
-            is_gpu = 1
+            gpu_location_tb2 = '/workspace/nvidia-examples/cnn/nvutils/run/gpustat_control/' + f_gpustat.filename
+            f_gpustat.save(gpu_location_tb2)
+            is_gpu[1] = 1
 
-    if is_gpu == 1:
+    if is_gpu[1] == 1:
         #file open and parsing
-        f = open(gpu_location, "r")
+        f = open(gpu_location_tb2, "r")
         gpustat_read = f.read()
         gpustat_string = json.loads(gpustat_read)
 
@@ -215,17 +235,15 @@ def gpustat_now_tb2():
 
             data.append(temp)
 
-        response = make_response(json.dumps(data))
-        response.content_type = 'application/json'
-
         f.close()
 
+        response = make_response(json.dumps(data))
+        response.content_type = 'application/json'
         return response
 
     else:
         response = make_response(json.dumps(default_data))
         response.content_type = 'application/json'
-
         return response
 
 @app.route("/update", methods=['POST'])
@@ -243,7 +261,6 @@ def update():
     for i in range(len(running_gpu_list)):
         temp = running_gpu_list[i].split()
         running_gpu_list[i] = temp[1]
-
         gpu_string = gpu_string + running_gpu_list[i] + "\n"
 
     #log_update_function
@@ -253,10 +270,8 @@ def update():
 
         for k in range(len(global_gpu_list)):
             temp2 = global_gpu_list[k].split(":")
-
             if temp1[0] == temp2[0]:
                 check = 1
-
                 if int(temp1[1]) > int(temp2[1]):
                     log_string = '(+) ' + temp1[0] + ":" + str(int(temp1[1]) - int(temp2[1]))
                     log_list.append(log_string)
@@ -275,7 +290,6 @@ def update():
 
         for k in range(len(running_gpu_list)):
             temp2 = running_gpu_list[k].split(":")
-
             if temp1[0] == temp2[0]:
                 check = 1
                 break
