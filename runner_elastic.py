@@ -58,8 +58,6 @@ class _ProfileKerasFitCallback(keras.callbacks.Callback):
       self.start_time = time.time()
 
   def on_batch_end(self, batch, logs=None):
-    """Records elapse time of the batch and calculates examples per second."""
-
     open_string = "/workspace/nvidia-examples/cnn/nvutils/run/" + str(local_ip) + "_log" + str(hvd.local_rank()) + ".txt"
     f_write = open(open_string, "a")
 
@@ -71,28 +69,33 @@ class _ProfileKerasFitCallback(keras.callbacks.Callback):
       timestamp = time.time()
       elapsed_time = timestamp - self.start_time
       examples_per_second = (self.batch_size * self.log_steps) / elapsed_time
+
       if hvd.local_rank() == 0:
         temp3 = "global_step: " + str(self.global_steps) + " images_per_sec: " + str(examples_per_second) + "\n"
         f_write.write(temp3)
 
         print("global_step: %d images_per_sec: %.1f" % (self.global_steps, examples_per_second))
         log_data["images_per_sec"] = float(examples_per_second)
+
       log_data["global_step"] = int(self.global_steps)
 
       temp1 = "[" + str(self.global_steps) + "] " + "node/worker: "  + str(local_ip) + "/" + str(hvd.local_rank()) + " -> elapsed time: " + str(elapsed_time) + "\n"
       f_write.write(temp1)
       log_data["elapsed_time"] = float(elapsed_time)
+
       temp2 = "[" + str(self.global_steps) + "] " + "node/worker: "  + str(local_ip) + "/" + str(hvd.local_rank()) + " -> current time: " + str(timestamp) + "\n"
       f_write.write(temp2)
-      log_data["current_time"] = float(timestamp)
 
       print("elapsed time: {}".format(elapsed_time))
       print("current time: {}".format(timestamp))
 
       self.start_time = timestamp
-
       log_data_json = json.dumps(log_data, ensure_ascii=False, indent="\t")
-      r = requests.post('http://115.145.178.218:8080/log', json=log_data_json)
+
+      if str(local_ip) == "115.145.178.217":
+        r = requests.post('http://115.145.178.218:8080/log-data-tb1', json=log_data_json)
+      elif str(local_ip) == "115.145.178.218":
+        r = requests.post('http://115.145.178.218:8080/log-data-tb2', json=log_data_json)
 
     f_write.close()
 
