@@ -17,18 +17,12 @@
 import nvutils
 from resnet_model import resnet50
 
-import os
-import sys
-import time
 import horovod.tensorflow.keras as hvd
 import daemonpkg.daemonize as dmn
 
 nvutils.init()
 
-log_rank = hvd.local_rank()
-log_str = "Start"
-
-dmn.start_daemon(log_str, log_rank)
+dmn.start_daemon("Start", hvd.local_rank())
 
 default_args = {
     'image_width' : 224,
