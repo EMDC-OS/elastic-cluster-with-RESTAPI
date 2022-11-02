@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>testbed2 Gpustat</title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">testbed2-Gpu-Live-Chart</a>
+        </div>
+{#      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">#}
+{#          <ul class="nav navbar-nav">#}
+{#              <li><a href="#">A link</a></li>#}
+{#          </ul>#}
+{#      </div><!-- /.navbar-collapse -->#}
+      </div>
+    </div>
+
+    <div class="jumbotron">
+      <div class="container-fluid">
+        <br/>
+        <p>Live data plotting using Flask and Highcharts.</p>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="container-fluid" id="data-container-util"></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="container-fluid" id="data-container-power"></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="container-fluid" id="data-container-mem"></div>
+        </div>
+    </div>
+    <hr>
+    <footer>
+        <p>&copy; YoungHoon 2022</p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+    <script src="static/js/highcharts_tb2.js"></script>
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

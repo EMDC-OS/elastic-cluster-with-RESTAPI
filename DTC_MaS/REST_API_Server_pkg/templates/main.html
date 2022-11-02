@@ -3,38 +3,34 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </head>
     <body>
-        <h1>Elastic Horovod GPU Autoscaling UI</h1>
+        <h1>DistributedTraining Cluster Scaling UI</h1>
         <form action = "http://115.145.178.218:8080/" method = "POST">
-            <p>Scale OUT (GPU +) [node_address:worker_num]: <input type = "text" value="" name = "+" /></p>
-            <p><input type = "submit" value = "Autoscaling(+)" /></p>
-            <br>
+            <p><strong>Scale IN (node_address:GPU_count)</strong></p>
+            <p><input type="text" value="" name="+"/>&nbsp;<input type="submit" value="Scale In"/></p>
         </form>
         <form action = "http://115.145.178.218:8080/" method = "POST">
-            <p>Scale IN (GPU -) [node_address:worker_num]: <input type = "text" value="" name = "-" /></p>
-            <p><input type = "submit" value = "Autoscaling(-)" /></p>
+            <p><strong>Scale OUT (node_address:GPU_count)</strong></p>
+            <p><input type="text" value="" name="-"/>&nbsp;<input type="submit" value="Scale Out"/></p>
             <br>
         </form>
-        <br>
-        <h2>Current Running Gpu</h2>
+        <h2>Current Running Job</h2>
         <pre id='gpu_list' style='font-size: 25px'></pre>
-        <h2>GPU Change Log</h2>
+        <h2>Job Change Log</h2>
         <pre id='gpu_change_log' style='font-size: 20px'></pre>
-        <br>
         <br>
         <h3>Node -> testbed1(115.145.178.217)</h3>
         <form action= "http://115.145.178.218:8080/log_tb1" method = "POST">
             <p><input type = "submit" value = "tb1 Train Log" /></p>
         </form>
         <form action= "http://115.145.178.218:8080/gpustat_tb1" method = "POST">
-            <p><input type = "submit" value = "tb1 Gpu Info" /></p>
+            <p><input type = "submit" value = "tb1 GPU Status" /></p>
         </form>
-        <br>
         <h3>Node -> testbed2(115.145.178.218)</h3>
         <form action= "http://115.145.178.218:8080/log_tb2" method = "POST">
             <p><input type = "submit" value = "tb2 Train Log" /></p>
         </form>
         <form action= "http://115.145.178.218:8080/gpustat_tb2" method = "POST">
-            <p><input type = "submit" value = "tb2 Gpu Info" /></p>
+            <p><input type = "submit" value = "tb2 GPU Status" /></p>
         </form>
         <br>
         <footer>

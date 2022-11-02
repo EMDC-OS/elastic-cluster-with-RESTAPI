@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, jsonify, make_response
-from random import random
 import requests
 import json
 
 app = Flask(__name__)
+
+gpu_location_tb1 = ""
+gpu_location_tb2 = ""
+
 log_list = []
 global_gpu_list = []
 gpustat_list = []
@@ -11,13 +14,11 @@ gpustat_list = []
 is_gpu = [0, 0]
 log_data_tb1_list = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 log_data_tb2_list = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
-
-time_now = 0
-gpu_location_tb1 = ""
-gpu_location_tb2 = ""
+default_data = [[[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]]]
 
 @app.route('/', methods = ['POST', 'GET'])
-def update_log():
+def scaling_Horovod():
+    # make running gpu list
     f_read = open("/workspace/nvidia-examples/cnn/nvutils/discover_hosts.sh", "r")
     running_gpu = f_read.read()
     running_gpu_list = running_gpu.split("\n")
@@ -28,6 +29,7 @@ def update_log():
         running_gpu_list[i] = temp[1]
     f_read.close()
 
+    # scaling in Horovod
     if request.method == 'POST':
         val = request.form
         val_list = list(val)
@@ -75,16 +77,17 @@ def update_log():
 
     return render_template("main.html")
 
+#train log
 @app.route('/log_tb1', methods = ['GET', 'POST'])
-def logging_tb1():
-    return render_template("log_index_tb1.html")
+def tb1_log_to_graph():
+    return render_template("log-index-tb1.html")
 
 @app.route('/log_tb2', methods = ['GET', 'POST'])
-def logging_tb2():
-    return render_template("log_index_tb2.html")
+def tb2_log_to_graph():
+    return render_template("log-index-tb2.html")
 
 @app.route('/log-data-tb1', methods = ['GET', 'POST'])
-def log_now_tb1():
+def tb1_log_data():
     global log_data_tb1_list
 
     if request.method == 'POST':
@@ -111,7 +114,7 @@ def log_now_tb1():
         return response
 
 @app.route('/log-data-tb2', methods = ['GET', 'POST'])
-def log_now_tb2():
+def tb2_log_data():
     global log_data_tb2_list
 
     if request.method == 'POST':
@@ -137,20 +140,21 @@ def log_now_tb2():
         response.content_type = 'application/json'
         return response
 
+#gpustat
 @app.route('/gpustat_tb1', methods = ['GET', 'POST'])
-def gpu_stat_tb1():
-    return render_template('gpu_index_tb1.html')
+def tb1_gpustat_to_graph():
+    return render_template('gpu-index-tb1.html')
 
 @app.route('/gpustat_tb2', methods = ['GET', 'POST'])
-def gpu_stat_tb2():
-    return render_template('gpu_index_tb2.html')
+def tb2_gpustat_to_graph():
+    return render_template('gpu-index-tb2.html')
 
 @app.route('/gpustat-data-tb1', methods = ['GET', 'POST'])
-def gpustat_now_tb1():
+def tb1_gpustat_data():
     global is_gpu
     global gpu_location_tb1
+    global default_data
     data = []
-    default_data = [[[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]]]
 
     if request.method == 'POST':
         f_gpustat = request.files.get('file', None)
@@ -196,11 +200,11 @@ def gpustat_now_tb1():
         return response
 
 @app.route('/gpustat-data-tb2', methods = ['GET', 'POST'])
-def gpustat_now_tb2():
+def tb2_gpustat_data():
     global is_gpu
     global gpu_location_tb2
+    global default_data
     data = []
-    default_data = [[[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]], [[0, 0], [0, 1], [0, 2]]]
 
     if request.method == 'POST':
         f_gpustat = request.files.get('file', None)
@@ -210,7 +214,6 @@ def gpustat_now_tb2():
             is_gpu[1] = 1
 
     if is_gpu[1] == 1:
-        #file open and parsing
         f = open(gpu_location_tb2, "r")
         gpustat_read = f.read()
         gpustat_string = json.loads(gpustat_read)
@@ -247,7 +250,7 @@ def gpustat_now_tb2():
         return response
 
 @app.route("/update", methods=['POST'])
-def update():
+def scaling_log_update():
     gpu_string = ""
     log_list_string = ""
     global global_gpu_list
@@ -311,5 +314,5 @@ def update():
         'gpu_log': log_list_string,
     })
 
-#if __name__ == "__main__":
-#    app.run(host="0.0.0.0", port=8080, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, debug=True)

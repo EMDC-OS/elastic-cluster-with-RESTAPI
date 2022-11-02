@@ -1,0 +1,59 @@
+{
+	"hostname": "testbed2",
+	"query_time": "2022-09-22T05:15:41.410546",
+	"gpus": [
+		{
+			"index": 0,
+			"uuid": "GPU-e67d4d08-d7a1-f440-bde7-c156658d4192",
+			"name": "Tesla V100-PCIE-16GB",
+			"temperature.gpu": 53,
+			"fan.speed": null,
+			"utilization.gpu": 44,
+			"power.draw": 51,
+			"enforced.power.limit": 250,
+			"memory.used": 5246,
+			"memory.total": 16384,
+			"processes": []
+		},
+		{
+			"index": 1,
+			"uuid": "GPU-19fe5646-47ef-8c61-49d7-9ddc9da885e7",
+			"name": "Tesla V100-PCIE-16GB",
+			"temperature.gpu": 53,
+			"fan.speed": null,
+			"utilization.gpu": 29,
+			"power.draw": 44,
+			"enforced.power.limit": 250,
+			"memory.used": 5246,
+			"memory.total": 16384,
+			"processes": []
+		},
+		{
+			"index": 2,
+			"uuid": "GPU-54030896-a63c-130f-8fce-bae5967778ff",
+			"name": "Tesla V100-PCIE-16GB",
+			"temperature.gpu": 39,
+			"fan.speed": null,
+			"utilization.gpu": 0,
+			"power.draw": 24,
+			"enforced.power.limit": 250,
+			"memory.used": 227,
+			"memory.total": 16384,
+			"processes": []
+		},
+		{
+			"index": 3,
+			"uuid": "GPU-5ca7addb-6119-973d-1070-49536c8aa58c",
+			"name": "Tesla V100-PCIE-16GB",
+			"temperature.gpu": 36,
+			"fan.speed": null,
+			"utilization.gpu": 0,
+			"power.draw": 25,
+			"enforced.power.limit": 250,
+			"memory.used": 227,
+			"memory.total": 16384,
+			"processes": []
+		}
+	],
+	"time_now": 103
+}
