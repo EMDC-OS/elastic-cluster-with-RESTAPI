@@ -1,4 +1,4 @@
-# ElasticHorovod-RESTAPI-tool
+# Elastic-Cluster-RESTAPI framework
 
 Elastic Horovod를 이용하여 분산 학습을 진행할 때 worker를 dynamic scaling in/out을 하기 위해 현재 동작 중인 Elastic Horovod의 상태를 파악해야 됩니다.
 
