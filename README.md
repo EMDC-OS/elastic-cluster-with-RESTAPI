@@ -105,3 +105,8 @@ templates 내부에는 웹 대시보드 동작에 필요한 html 파일이 있�
 아래 사진은 Elastic Horovod와 Web dashboard가 동작하는 것입니다.
 ![스크린샷, 2022-12-19 03-16-46](https://user-images.githubusercontent.com/30406090/208312830-7a2bac14-fd54-4e89-b171-e555cb15b904.png)  
 ![스크린샷, 2022-12-19 13-22-35](https://user-images.githubusercontent.com/30406090/208347088-73c31def-4b35-4980-b9bb-a99fe69d68aa.png)
+
+
+
+
+
